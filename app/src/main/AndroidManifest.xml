@@ -23,7 +23,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.vk.sdk.VKServiceActivity" android:label="ServiceActivity" android:theme="@style/VK.Transparent" />
+        <activity
+            android:name="com.vk.sdk.VKServiceActivity"
+            android:label="ServiceActivity"
+            android:theme="@style/VK.Transparent" />
 
         <provider
             android:authorities="ru.nikita.edu.collage"

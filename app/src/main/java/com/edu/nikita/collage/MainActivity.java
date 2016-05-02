@@ -41,11 +41,7 @@ public class MainActivity extends AppCompatActivity implements FragmentChangedCa
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        
+
         if(savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(R.id.container,new ChoseUsernameFragment(),USERNAME_FRAGMENT).commit();
 
@@ -90,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements FragmentChangedCa
             //Если userid в аргументах имеется значит запускаем фрагмент для выбора изображенийы
             MainActivityFragment fragment = new MainActivityFragment();
             fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,PHOTO_FRAGMENT).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,PHOTO_FRAGMENT).addToBackStack(null).commit();
         }
         else
         {
@@ -100,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements FragmentChangedCa
             {
                 ViewCollageFragment fragment = new ViewCollageFragment();
                 fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,COLLAGE_FRAGMENT).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,COLLAGE_FRAGMENT).addToBackStack(null).commit();
             }
         }
 

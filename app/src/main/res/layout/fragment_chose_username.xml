@@ -3,6 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+    android:id="@+id/chose_username_parent"
         android:background="@color/accent_material_dark">
 
 
@@ -22,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginRight="64dp"
             android:hint="Username"
             android:id="@+id/autoCompleteTextView" />
 
@@ -31,6 +33,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/autoCompleteTextView"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_toRightOf="@+id/autoCompleteTextView" />
 </RelativeLayout>

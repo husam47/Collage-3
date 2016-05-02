@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:id="@+id/photo_picker_linearLayout"
+    android:orientation="vertical"
+    android:measureWithLargestChild="false">
 <android.support.v7.widget.RecyclerView
 
     android:id="@+id/photo_recycler"
@@ -15,7 +17,8 @@
     app:layoutManager="GridLayoutManager"
     tools:listitem="@layout/photo_picker_content"
     android:padding="4dp"
-    android:layout_weight="3">
+    android:layout_weight="3"
+    android:layout_marginTop="32dp">
 
 
 </android.support.v7.widget.RecyclerView>

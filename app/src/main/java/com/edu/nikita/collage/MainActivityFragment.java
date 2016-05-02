@@ -2,7 +2,10 @@ package com.edu.nikita.collage;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -111,11 +114,28 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if(!isNetworkConnected())
+        {
+            Snackbar.make((getActivity().findViewById(R.id.photo_picker_linearLayout)), getString(R.string.no_internet), Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public void onLoadFinished(Loader<BaseResponse> loader, BaseResponse data) {
         if(loader.getId() == R.id.photo_list_loader) {
-            if (data.getRequestResult() == BaseResponse.RequestResult.SUCCESS) {
+            if (data.getRequestResult() == BaseResponse.RequestResult.SUCCESS) {//mAnswer== null когда аккаунт закрыт
                 ArrayList<ImageModel> list = data.getTypedAnswer();
                 adapter.setPhotosLinkList(list);
+            }else
+            {
+                if(!isNetworkConnected()) {
+                    Snackbar.make((getActivity().findViewById(R.id.photo_picker_linearLayout)), getString(R.string.no_internet), Snackbar.LENGTH_LONG).show();
+                }else {
+                    Snackbar.make((getActivity().findViewById(R.id.photo_picker_linearLayout)), getString(R.string.failed_load_picasso), Snackbar.LENGTH_LONG).show();
+                }
+
             }
         }
     }
@@ -173,7 +193,6 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
          */
         public void setPhotosLinkList(ArrayList<ImageModel> photosLinkList) {
             this.photosLinkList = photosLinkList;
-            selectedPhoto = new ArrayList<>();
             notifyDataSetChanged();
         }
 
@@ -234,5 +253,27 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         }
     }
 
-
+    /**
+     * GПроверка наличия сети
+     * @return true если сеть есть false если нет
+     */
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
 }

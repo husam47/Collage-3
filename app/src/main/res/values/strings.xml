@@ -7,8 +7,8 @@
     <string name="share">Share vk</string>
     <integer name="com_vk_sdk_AppId">5443478</integer>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="posted">Photos posted on your wall</string>
     <string name="failed_load_picasso">Error when loading photos</string>
+    <string name="no_internet">No internet connection</string>
 
 </resources>

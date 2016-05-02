@@ -10,4 +10,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="posted">Фото добавлено на стену</string>
     <string name="failed_load_picasso">Ошибка во время загрузки фото</string>
+    <string name="no_internet">Нет интернет соединения</string>
 </resources>
