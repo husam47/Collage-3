@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent_material_dark">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentEnd="false"
+            android:clickable="true"
+            android:background="@drawable/arrow"
+            android:layout_below="@+id/autoCompleteTextView"
+            android:layout_centerHorizontal="true" />
+
+        <com.edu.nikita.collage.AutoCpmleteView.DelayAutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:hint="Username"
+            android:id="@+id/autoCompleteTextView" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/autoCompleteTextView"
+        android:visibility="gone" />
+</RelativeLayout>

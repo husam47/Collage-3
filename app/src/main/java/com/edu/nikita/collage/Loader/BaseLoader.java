@@ -10,6 +10,9 @@ import java.io.IOException;
 
 /**
  * Created by Nikita on 27.04.2016.
+ * Абстрактный AsyncTaskLoader для загрузки данных и сохранению их после загрузки,
+ * для загрузки данных переопределить метод apiCall, для сохранения в классе
+ * наследуемом от Response нужно переопределить метод Save
  */
 public abstract class BaseLoader extends AsyncTaskLoader<BaseResponse> {
 
@@ -26,8 +29,10 @@ public abstract class BaseLoader extends AsyncTaskLoader<BaseResponse> {
     @Override
     public BaseResponse loadInBackground() {
         try {
+            //Выполняем запрос, получаем данные
             BaseResponse response = apiCall();
             if (response.getRequestResult() == BaseResponse.RequestResult.SUCCESS) {
+                //Если успешно то сохраняем данные
                 response.save(getContext());
                 onSuccess();
             } else {
@@ -46,5 +51,10 @@ public abstract class BaseLoader extends AsyncTaskLoader<BaseResponse> {
     protected void onError() {
     }
 
+    /**
+     * Метод для загрузки данных
+     * @return Ответ
+     * @throws IOException
+     */
     protected abstract BaseResponse apiCall() throws IOException;
 }

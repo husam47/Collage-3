@@ -1,4 +1,4 @@
-package com.edu.nikita.collage.Responses;
+package com.edu.nikita.collage.Retrofit;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * Created by Nikita on 27.04.2016.
+ * Обьект для запроса списка пользователей
  */
 public class ResponseSearchUser {
 

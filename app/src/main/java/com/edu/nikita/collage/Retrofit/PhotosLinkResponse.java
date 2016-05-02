@@ -1,4 +1,4 @@
-package com.edu.nikita.collage.Responses;
+package com.edu.nikita.collage.Retrofit;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -25,6 +25,8 @@ public class PhotosLinkResponse {
         return pagination.getNextUrl();
     }
 
+    public String getMaxId (){return pagination.getNextMaxId();}
+
 
 
 
@@ -45,6 +47,23 @@ public class PhotosLinkResponse {
 
     public class Data implements Comparable<PhotosLinkResponse.Data> {
 
+
+        public int getLikesCount() {
+            return likes.count;
+        }
+        public String getImageUrl()
+        {
+            return image.lowResImage.link;
+        }
+
+        public String getImageId(){return imageId;}
+        public int getWidth(){return image.lowResImage.width;}
+        public int getHeight(){return image.lowResImage.height;}
+        public Videos getVideos() {
+            return videos;
+        }
+
+
         @SerializedName("likes")
         private Likes likes;
         @SerializedName("videos")
@@ -52,24 +71,12 @@ public class PhotosLinkResponse {
         @SerializedName("images")
         private Images image;
 
-        public Videos getVideos() {
-            return videos;
-        }
+
 
         @SerializedName("id")
         private String imageId;
 
-        public int getLikesCount() {
-            return likes.count;
-        }
 
-        public Images getImage() {
-            return image;
-        }
-
-        public String getImageId() {
-            return imageId;
-        }
 
         @Override
         public int compareTo(Data another) {
@@ -85,19 +92,11 @@ public class PhotosLinkResponse {
     private class Likes {
         @SerializedName("count")
         private int count;
-
-        public int getCount() {
-            return count;
-        }
     }
 
     private class Images {
         @SerializedName("low_resolution")
         private Image lowResImage;
-
-        public Image getLowResImage() {
-            return lowResImage;
-        }
     }
 
     /**
@@ -113,17 +112,6 @@ public class PhotosLinkResponse {
         @SerializedName("height")
         private int height;
 
-        public String getLink() {
-            return link;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
     }
 
     private class Videos {

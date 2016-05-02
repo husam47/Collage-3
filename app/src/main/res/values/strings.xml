@@ -2,4 +2,13 @@
     <string name="app_name">Collage</string>
     <string name="action_settings">Settings</string>
     <string name="Client_id">9734d32bcee14651829e7b2bed26b4c3</string>
+    <string name="user_id">USER_ID</string>
+    <string name="get_collage">Get collage</string>
+    <string name="share">Share vk</string>
+    <integer name="com_vk_sdk_AppId">5443478</integer>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="posted">Photos posted on your wall</string>
+    <string name="failed_load_picasso">Error when loading photos</string>
+
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Коллаж</string>
+    <string name="action_settings">Настройки</string>
+    <string name="Client_id">9734d32bcee14651829e7b2bed26b4c3</string>
+    <string name="user_id">USER_ID</string>
+    <string name="get_collage">Давай коллаж</string>
+    <string name="share">На стену в вк</string>
+    <integer name="com_vk_sdk_AppId">5443478</integer>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="posted">Фото добавлено на стену</string>
+    <string name="failed_load_picasso">Ошибка во время загрузки фото</string>
+</resources>

@@ -8,6 +8,7 @@ import retrofit2.http.OPTIONS;
 
 /**
  * Created by Nikita on 17.04.2016.
+ * Фабрика запросов
  */
 public class ApiFactory {
 
@@ -15,7 +16,10 @@ public class ApiFactory {
     public  static final String BASE_URL_API = "https://api.instagram.com/v1/";
 
 
-
+    /**
+     * Запрос на список полльзователей
+     * @return
+     */
     @NonNull
     public static UserSearch getUserSearch()
     {
@@ -26,6 +30,10 @@ public class ApiFactory {
                 create(UserSearch.class);
     }
 
+    /**
+     * Запрос на медиа файлы пользователя
+     * @return
+     */
     @NonNull
     public  static  PhotoList getPhotoList()
     {
@@ -35,6 +43,12 @@ public class ApiFactory {
                 build().
                 create(PhotoList.class);
     }
+
+
+    /**
+     * Запрос на медиа файлы с указанием max_id
+     * @return
+     */
 
     @NonNull
     public static PhotoList getPhotoListWithMaxId()

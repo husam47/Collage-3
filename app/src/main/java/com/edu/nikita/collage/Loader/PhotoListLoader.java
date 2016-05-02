@@ -1,29 +1,25 @@
 package com.edu.nikita.collage.Loader;
 
 import android.content.Context;
-import android.provider.ContactsContract;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 
+import com.edu.nikita.collage.ImageModel;
 import com.edu.nikita.collage.Responses.BaseResponse;
-import com.edu.nikita.collage.Responses.PhotosLinkResponse;
-import com.edu.nikita.collage.Responses.ResponseSearchUser;
+import com.edu.nikita.collage.Responses.ImagesModelResponse;
+import com.edu.nikita.collage.Retrofit.PhotosLinkResponse;
 import com.edu.nikita.collage.Retrofit.ApiFactory;
 import com.edu.nikita.collage.Retrofit.PhotoList;
-import com.edu.nikita.collage.Retrofit.UserSearch;
 
 import java.io.IOException;
-import java.net.ContentHandler;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
 
 /**
- * Лоадер для загрузки списка пользователей c нужным ником, ник и client_id передаются в конструкторе
+ * Лоадер для загрузки списка фотографий пользователя,
+ * возвращает список изображений отсортрованных по количеству лайков
  */
 public class PhotoListLoader extends BaseLoader{
 
@@ -55,7 +51,7 @@ public class PhotoListLoader extends BaseLoader{
      */
     @Override
     protected BaseResponse apiCall() throws IOException {
-        List<PhotosLinkResponse.Data> result = new ArrayList<>();
+        ArrayList<PhotosLinkResponse.Data> result = new ArrayList<>();
 
         //Получаем сервис ретрофита
         PhotoList service = ApiFactory.getPhotoList();
@@ -63,31 +59,37 @@ public class PhotoListLoader extends BaseLoader{
         Call<PhotosLinkResponse> call = service.getPhotoList(user, client,String.valueOf(count));
         //Получаем ответ
         PhotosLinkResponse list = call.execute().body();
-        //Т.к в каждом ответе есть url на следующие записи, инициализируем StringBuilder для удаления BASE_URL_API
-        //из url, при составлении запроса он будет вставлен
-        StringBuilder stringBuilder = new StringBuilder();
+        if(list == null)
+            return new BaseResponse().setRequestResult(BaseResponse.RequestResult.ERROR).setAnswer(null);
+
+        //Удаляем из ответа видео
+        removeMediaVideo(list.getData());
+
+        //Сохраняем ответ в результирующий список
+        result.addAll(list.getData());
 
         //Пока есть url для следующих записей пвторяем запросы сохраняя данные
-        while (list != null && list.getNextUrl() != null)
+        while (list.getNextUrl() != null)
         {
+
+            service = ApiFactory.getPhotoListWithMaxId();
+            Call<PhotosLinkResponse> curCall = service.getPhotoListWithMaxId(user, client,String.valueOf(count),list.getMaxId());
+            list = curCall.execute().body();
             //Удаляем записи с видео
             removeMediaVideo(list.getData());
             //Добавляем в результирующий список
             result.addAll(list.getData());
-
-            if(stringBuilder.length() > 0)
-                stringBuilder.delete(0,stringBuilder.length()-1);
-            stringBuilder.append(list.getNextUrl());
-            stringBuilder.delete(0,stringBuilder.lastIndexOf(ApiFactory.BASE_URL_API));
-
-            Call<PhotosLinkResponse> curCall = service.getPhotoListWithMaxId(stringBuilder.toString());
-            list = curCall.execute().body();
         }
 
-        Collections.sort(result);
+
+        //Формируем из результирующего списка список с данными о изображении
+        ArrayList<ImageModel> images = fromDataToImageModel(result);
+
+        //Сорттируем по лайкам
+        Collections.sort(images);
 
         //Возвращаем список пользователей найденных по запросу
-        return new BaseResponse().setRequestResult(BaseResponse.RequestResult.SUCCESS).setAnswer(result);
+        return new ImagesModelResponse().setRequestResult(BaseResponse.RequestResult.SUCCESS).setAnswer(images);
     }
 
     /**
@@ -96,10 +98,28 @@ public class PhotoListLoader extends BaseLoader{
      */
     public void removeMediaVideo(@NonNull List<PhotosLinkResponse.Data> list)
     {
-        for(PhotosLinkResponse.Data entry : list)
+        for(int i = list.size()-1; i >= 0;i--)
         {
-            if(entry.getVideos() != null)
-                list.remove(entry);
+            if(list.get(i).getVideos() != null)
+                list.remove(i);
         }
     }
+
+
+    /**
+     * Из списка Data делает список ImageModel
+     * @param input список элементов Data
+     * @return список элементов ImageModel
+     */
+    static public ArrayList<ImageModel> fromDataToImageModel(ArrayList<PhotosLinkResponse.Data> input)
+    {
+        ArrayList<ImageModel> result = new ArrayList<>(input.size());
+        for(PhotosLinkResponse.Data tmpEntry: input)
+        {
+            result.add(new ImageModel(tmpEntry.getImageUrl(),tmpEntry.getImageId(),
+                    tmpEntry.getWidth(),tmpEntry.getHeight(),tmpEntry.getLikesCount()));
+        }
+        return result;
+    }
+
 }
