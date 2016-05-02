@@ -243,7 +243,14 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //Если пользователь ставит галочку и id этого изображения нет в нашем списке то добавляем егов список
                 if (isChecked && !selectedPhoto.contains(model.getId())) {
-                    selectedPhoto.add(model.getId());
+                    //Коллаж реализован только для 4-ех изображений
+                    if (selectedPhoto.size() >= 4) {
+                        Snackbar.make(getActivity().findViewById(R.id.photo_picker_linearLayout),
+                                R.string.photo_too_mach,Snackbar.LENGTH_SHORT).show();
+
+                    } else {
+                        selectedPhoto.add(model.getId());
+                    }
                 }
                 // Если пользователь убирает галочку удаляем id из списка выбранных
                 else if (!isChecked && selectedPhoto.contains(model.getId())) {

@@ -11,4 +11,6 @@
     <string name="posted">Фото добавлено на стену</string>
     <string name="failed_load_picasso">Ошибка во время загрузки фото</string>
     <string name="no_internet">Нет интернет соединения</string>
+    <string name="photo_too_mach">За раз максимум 4 изображения</string>
+
 </resources>

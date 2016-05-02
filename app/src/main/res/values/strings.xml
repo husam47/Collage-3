@@ -10,5 +10,6 @@
     <string name="posted">Photos posted on your wall</string>
     <string name="failed_load_picasso">Error when loading photos</string>
     <string name="no_internet">No internet connection</string>
+    <string name="photo_too_mach">Maximum 4 photo</string>
 
 </resources>
