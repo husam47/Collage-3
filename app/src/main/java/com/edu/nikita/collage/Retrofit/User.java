@@ -45,4 +45,5 @@ public class User extends Object {
         return username.equals(o.toString());
         return false;
     }
+
 }

@@ -1,6 +1,7 @@
 package com.edu.nikita.collage;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,6 +37,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
 
     private GridLayoutManager lLayout;
 
+    private String accessToken  = "";
     //Переменные для id пользователя
     String userId = null;
 
@@ -61,7 +63,11 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
 
         adapter = new PhotoRecyclerAdapter();
-
+        SharedPreferences preferences = getContext().getSharedPreferences(ChoseUsernameFragment.APP_PREFERENCES,Context.MODE_PRIVATE);
+        if ( preferences.contains(getString(R.string.access_token)) )
+        {
+            accessToken = preferences.getString(getString(R.string.access_token),"");
+        }
 
         Bundle bundle = getArguments();
         userId = bundle.getString(callback.USER_ID);
@@ -109,7 +115,7 @@ public class MainActivityFragment extends Fragment implements View.OnClickListen
     @Override
     public Loader<BaseResponse> onCreateLoader(int id, Bundle args) {
         if(id == R.id.photo_list_loader)
-            return new PhotoListLoader(getContext(),userId,getString(R.string.Client_id),MAX_PHOTO_QUERY);
+            return new PhotoListLoader(getContext(),userId,accessToken,MAX_PHOTO_QUERY);
         return null;
     }
 

@@ -3,6 +3,7 @@ package com.edu.nikita.collage;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,7 +17,14 @@ import android.widget.ProgressBar;
 
 import com.edu.nikita.collage.AutoCpmleteView.DelayAutoCompleteAdapter;
 import com.edu.nikita.collage.AutoCpmleteView.DelayAutoCompleteTextView;
+import com.edu.nikita.collage.Pojo.TokenResponse;
+import com.edu.nikita.collage.Retrofit.ApiFactory;
+import com.edu.nikita.collage.Retrofit.GetAccessToken;
 import com.edu.nikita.collage.Retrofit.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * fragment для выбора логина, активити-хост(или любой другой обьект управляющий активностью) должен реализовать интерфейс FragmentChangedCallback
@@ -24,7 +32,14 @@ import com.edu.nikita.collage.Retrofit.User;
  * с Bundle где содержится единственная запись- id пользователя
  */
 
-public class ChoseUsernameFragment extends Fragment implements View.OnClickListener {
+public class ChoseUsernameFragment extends Fragment implements View.OnClickListener, Callback<TokenResponse> {
+
+
+    public static final String APP_PREFERENCES = "mysettings";
+    private SharedPreferences preferences;
+
+    AuthDialog dlg;
+    private boolean takingAccessToken = false;
 
 
     /**
@@ -55,11 +70,19 @@ public class ChoseUsernameFragment extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       View rootView = inflater.inflate(R.layout.fragment_chose_username,container,false);
+
+        preferences = getContext().getSharedPreferences(APP_PREFERENCES,Context.MODE_PRIVATE);
+
+        View rootView = inflater.inflate(R.layout.fragment_chose_username,container,false);
         //Настраиваем подсказки
         usersChose = (DelayAutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextView);
         usersChose.setThreshold(2);
-        autoCompleteAdapter = new DelayAutoCompleteAdapter(getContext(),getString(R.string.Client_id));
+        String access_token = "";
+        if ( preferences.contains(getString(R.string.access_token)) )
+        {
+            access_token = preferences.getString(getString(R.string.access_token),"");
+        }
+        autoCompleteAdapter = new DelayAutoCompleteAdapter(getContext(),access_token,this);
         usersChose.setAdapter(autoCompleteAdapter);
         usersChose.setLoadingIndicator((ProgressBar) rootView.findViewById(R.id.progressBar));
         rootView.findViewById(R.id.button).setOnClickListener(this);
@@ -70,6 +93,11 @@ public class ChoseUsernameFragment extends Fragment implements View.OnClickListe
     public void onStart() {
         super.onStart();
 
+
+
+
+        //AuthDialog dlg = new AuthDialog(getContext());
+        //dlg.show();
     }
 
 
@@ -109,5 +137,40 @@ public class ChoseUsernameFragment extends Fragment implements View.OnClickListe
             return true;
         }
         return false;
+    }
+
+
+    public void accessTokenNotValid()
+    {
+        if(isNetworkConnected() && !takingAccessToken){
+            takingAccessToken = true;
+            dlg = new AuthDialog(getContext(),this);
+            dlg.show();
+        }else
+            Snackbar.make((getActivity().findViewById(R.id.chose_username_parent)), getString(R.string.no_internet), Snackbar.LENGTH_LONG).show();
+
+    }
+
+
+        @Override
+        public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
+            SharedPreferences preferences = getContext().getSharedPreferences(ChoseUsernameFragment.APP_PREFERENCES,Context.MODE_PRIVATE);
+            String str = response.body().accessToken;
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(getContext().getString(R.string.access_token),str);
+            editor.apply();
+            autoCompleteAdapter.setAccessToken(str);
+            dlg.closeDialog();
+        }
+
+        @Override
+        public void onFailure(Call<TokenResponse> call, Throwable t) {
+            Snackbar.make(getActivity().findViewById(R.id.chose_username_parent), t.getMessage(), Snackbar.LENGTH_LONG).show();
+            dlg.closeDialog();
+        }
+
+    public void authDialogDismis()
+    {
+        takingAccessToken = false;
     }
 }

@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
  * Created by Nikita on 27.04.2016.
  */
 public class BaseResponse  {
+
+    public int errorCode = -1;
     @Nullable
     private Object mAnswer;
 

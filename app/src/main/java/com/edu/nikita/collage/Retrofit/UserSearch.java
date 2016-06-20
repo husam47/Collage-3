@@ -10,6 +10,6 @@ import retrofit2.http.Query;
 public interface UserSearch {
 
     @GET("users/search")
-    Call<ResponseSearchUser> search(@Query("q") String userName, @Query("client_id") String clientId);
+    Call<ResponseSearchUser> search(@Query("q") String userName, @Query("access_token") String accessToken);
 
 }

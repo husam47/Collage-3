@@ -13,16 +13,16 @@ import retrofit2.http.OPTIONS;
 public class ApiFactory {
 
 
-    public  static final String BASE_URL_API = "https://api.instagram.com/v1/";
+    public static final String BASE_URL_API = "https://api.instagram.com/v1/";
 
 
     /**
      * Запрос на список полльзователей
+     *
      * @return
      */
     @NonNull
-    public static UserSearch getUserSearch()
-    {
+    public static UserSearch getUserSearch() {
         return new Retrofit.Builder().
                 baseUrl(BASE_URL_API).
                 addConverterFactory(GsonConverterFactory.create()).
@@ -32,11 +32,11 @@ public class ApiFactory {
 
     /**
      * Запрос на медиа файлы пользователя
+     *
      * @return
      */
     @NonNull
-    public  static  PhotoList getPhotoList()
-    {
+    public static PhotoList getPhotoList() {
         return new Retrofit.Builder().
                 baseUrl(BASE_URL_API).
                 addConverterFactory(GsonConverterFactory.create()).
@@ -47,12 +47,12 @@ public class ApiFactory {
 
     /**
      * Запрос на медиа файлы с указанием max_id
+     *
      * @return
      */
 
     @NonNull
-    public static PhotoList getPhotoListWithMaxId()
-    {
+    public static PhotoList getPhotoListWithMaxId() {
         return new Retrofit.Builder().
                 baseUrl(BASE_URL_API).
                 addConverterFactory(GsonConverterFactory.create()).
@@ -61,5 +61,17 @@ public class ApiFactory {
     }
 
 
+    /**
+     * Запрос accessToken
+     */
 
+    @NonNull
+    public static GetAccessToken getAccessToken()
+    {
+        return new Retrofit.Builder().
+                baseUrl(BASE_URL_API).
+                addConverterFactory(GsonConverterFactory.create()).
+                build().
+                create(GetAccessToken.class);
+    }
 }

@@ -11,10 +11,10 @@ import retrofit2.http.Query;
 public interface PhotoList {
 
     @GET("users/{user_id}/media/recent")
-    Call<PhotosLinkResponse> getPhotoList(@Path("user_id") String user_id, @Query("client_id") String client,@Query("count") String count);
+    Call<PhotosLinkResponse> getPhotoList(@Path("user_id") String user_id, @Query("access_token") String accessToken,@Query("count") String count);
 
     @GET("users/{user_id}/media/recent")
-    Call<PhotosLinkResponse> getPhotoListWithMaxId(@Path("user_id") String user_id, @Query("client_id") String client,
+    Call<PhotosLinkResponse> getPhotoListWithMaxId(@Path("user_id") String user_id, @Query("access_token") String accessToken,
                                                    @Query("count") String count,@Query("max_id") String max_id);
 
 }

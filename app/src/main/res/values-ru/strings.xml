@@ -2,7 +2,9 @@
 <resources>
     <string name="app_name">Коллаж</string>
     <string name="action_settings">Настройки</string>
-    <string name="Client_id">9734d32bcee14651829e7b2bed26b4c3</string>
+    <string name="Client_id">a7bc045bc58b43758cc2e81aac9d2be0</string>
+    <string name="Client_secret">e9040f81c897451883e9da42079b0f7b</string>
+    <string name="Redirect_uri">https://vk.com/n.bulygin</string>
     <string name="user_id">USER_ID</string>
     <string name="get_collage">Давай коллаж</string>
     <string name="share">На стену в вк</string>
@@ -12,5 +14,8 @@
     <string name="failed_load_picasso">Ошибка во время загрузки фото</string>
     <string name="no_internet">Нет интернет соединения</string>
     <string name="photo_too_mach">За раз максимум 4 изображения</string>
+    <string name="access_token">ACCESS_TOKEN</string>
+    <string name="access_tokecn_not_valid_error">error_type=OAuthAccessTokenError</string>
+
 
 </resources>

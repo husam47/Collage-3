@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Лоадер для загрузки списка фотографий пользователя,
@@ -23,7 +24,7 @@ import retrofit2.Call;
  */
 public class PhotoListLoader extends BaseLoader{
 
-    private String client;
+    private String accessToken;
     private String user;
     private int count = 20;
 
@@ -31,13 +32,13 @@ public class PhotoListLoader extends BaseLoader{
      * Инициализация лоадера для загрузки списка ссылок на фото пользователя
      * @param context контекст
      * @param user_id id пользователя
-     * @param client_id id клиента прилжения
+     * @param access_token токен
      */
-    public PhotoListLoader(Context context, @NonNull String user_id,@NonNull String client_id,int count_in)
+    public PhotoListLoader(Context context, @NonNull String user_id,@NonNull String access_token,int count_in)
     {
         super(context);
         user = user_id;
-        client = client_id;
+        accessToken = access_token;
         if(count_in >= 0)
             count = count_in;
     }
@@ -56,12 +57,17 @@ public class PhotoListLoader extends BaseLoader{
         //Получаем сервис ретрофита
         PhotoList service = ApiFactory.getPhotoList();
         //Формируем запрос
-        Call<PhotosLinkResponse> call = service.getPhotoList(user, client,String.valueOf(count));
+        Call<PhotosLinkResponse> call = service.getPhotoList(user,accessToken ,String.valueOf(count));
         //Получаем ответ
-        PhotosLinkResponse list = call.execute().body();
-        if(list == null)
-            return new BaseResponse().setRequestResult(BaseResponse.RequestResult.ERROR).setAnswer(null);
-
+        Response<PhotosLinkResponse> response = call.execute();
+        PhotosLinkResponse list = response.body();
+        if(list == null) {
+            BaseResponse resultResponse = new BaseResponse().setRequestResult(BaseResponse.RequestResult.ERROR).setAnswer(null);
+            if (response.code() == 400) {
+                resultResponse.errorCode = 400;
+            }
+            return resultResponse;
+        }
         //Удаляем из ответа видео
         removeMediaVideo(list.getData());
 
@@ -71,9 +77,8 @@ public class PhotoListLoader extends BaseLoader{
         //Пока есть url для следующих записей пвторяем запросы сохраняя данные
         while (list.getNextUrl() != null)
         {
-
             service = ApiFactory.getPhotoListWithMaxId();
-            Call<PhotosLinkResponse> curCall = service.getPhotoListWithMaxId(user, client,String.valueOf(count),list.getMaxId());
+            Call<PhotosLinkResponse> curCall = service.getPhotoListWithMaxId(user, accessToken,String.valueOf(count),list.getMaxId());
             list = curCall.execute().body();
             //Удаляем записи с видео
             removeMediaVideo(list.getData());

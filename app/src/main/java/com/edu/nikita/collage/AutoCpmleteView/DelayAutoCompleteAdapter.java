@@ -2,6 +2,7 @@ package com.edu.nikita.collage.AutoCpmleteView;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +12,23 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.edu.nikita.collage.ChoseUsernameFragment;
 import com.edu.nikita.collage.R;
+import com.edu.nikita.collage.Retrofit.ApiFactory;
 import com.edu.nikita.collage.Retrofit.ResponseSearchUser;
 import com.edu.nikita.collage.Retrofit.User;
-import com.edu.nikita.collage.Retrofit.ApiFactory;
 import com.edu.nikita.collage.Retrofit.UserSearch;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Converter;
+import retrofit2.Response;
 
 /**
  * Created by Nikita on 29.04.2016.
@@ -42,14 +49,15 @@ public class DelayAutoCompleteAdapter extends BaseAdapter implements Filterable 
     /**
      * id приложения для instagram
      */
-    private String client;
+    private String accessToken;
+    ChoseUsernameFragment fragment;
 
 
-
-    public DelayAutoCompleteAdapter(Context context, @NonNull String client_) {
+    public DelayAutoCompleteAdapter(Context context, @NonNull String access_token_, ChoseUsernameFragment fragment_) {
         mContext = context;
-        mResults = new ArrayList<User>();
-        client = client_;
+        mResults = new ArrayList<>();
+        accessToken = access_token_;
+        fragment = fragment_;
     }
 
     @Override
@@ -94,14 +102,25 @@ public class DelayAutoCompleteAdapter extends BaseAdapter implements Filterable 
                     try {
                         UserSearch service = ApiFactory.getUserSearch();
                         //Формируем запрос
-                        Call<ResponseSearchUser> call = service.search(String.valueOf(constraint), client);
+                        Call<ResponseSearchUser> call = service.search(String.valueOf(constraint), accessToken);
                         //Получаем ответ
-                        users = call.execute().body();
+                        Response<ResponseSearchUser> response = call.execute();
+                        users = response.body();
+                        if(users == null && response.code() == 400)
+                        {
+                            fragment.getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fragment.accessTokenNotValid();
+                                }
+                            });
+                        }
+                        // users.getUsers().size();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                     if (users != null) {
-                        filterResults.values = users.getUsers();
+                       filterResults.values = users.getUsers();
                         filterResults.count = users.getUsers().size();
                     } else {
                         filterResults.values = null;
@@ -137,5 +156,16 @@ public class DelayAutoCompleteAdapter extends BaseAdapter implements Filterable 
             return mResults.get(index);
 
         return null;
+    }
+
+
+    /**
+     * Задаем новый access_token
+     * @param newAccessToken
+     */
+    public void setAccessToken(String newAccessToken)
+    {
+        accessToken = newAccessToken;
+        notifyDataSetInvalidated();
     }
 }
